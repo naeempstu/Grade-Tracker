@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/subject_provider.dart';
 import '../widgets/custom_textfield.dart';
+import '../widgets/page_frame.dart';
 
 class AddSubjectScreen extends StatefulWidget {
   const AddSubjectScreen({super.key});
@@ -45,81 +46,104 @@ class _AddSubjectScreenState extends State<AddSubjectScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Add New Subject',
-              style: Theme.of(
-                context,
-              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Track your grades with a clear overview.',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 24),
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Padding(
+    return PageFrame(
+      child: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: double.infinity,
                 padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: colorScheme.primary,
+                  borderRadius: BorderRadius.circular(8),
+                ),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomTextField(
-                      controller: _nameController,
-                      labelText: 'Subject Name',
-                      icon: Icons.book_outlined,
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Please enter a subject name';
-                        }
-                        return null;
-                      },
+                    Icon(
+                      Icons.auto_stories_outlined,
+                      color: colorScheme.onPrimary,
+                      size: 32,
                     ),
                     const SizedBox(height: 16),
-                    CustomTextField(
-                      controller: _markController,
-                      labelText: 'Mark',
-                      keyboardType: TextInputType.number,
-                      icon: Icons.percent_outlined,
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Please enter a mark';
-                        }
-                        final mark = int.tryParse(value);
-                        if (mark == null) {
-                          return 'Enter a valid number';
-                        }
-                        if (mark < 0 || mark > 100) {
-                          return 'Mark must be between 0 and 100';
-                        }
-                        return null;
-                      },
+                    Text(
+                      'Add New Subject',
+                      style: textTheme.headlineSmall?.copyWith(
+                        color: colorScheme.onPrimary,
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
-                    const SizedBox(height: 24),
-                    SizedBox(
-                      width: double.infinity,
-                      child: FilledButton.icon(
-                        onPressed: _submitForm,
-                        icon: const Icon(Icons.save_outlined),
-                        label: const Text('Save Subject'),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Enter a subject and mark to keep your grade summary fresh.',
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onPrimary.withValues(alpha: 0.82),
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 16),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      CustomTextField(
+                        controller: _nameController,
+                        labelText: 'Subject Name',
+                        icon: Icons.book_outlined,
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Please enter a subject name';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      CustomTextField(
+                        controller: _markController,
+                        labelText: 'Mark',
+                        keyboardType: TextInputType.number,
+                        icon: Icons.percent_outlined,
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Please enter a mark';
+                          }
+                          final mark = int.tryParse(value);
+                          if (mark == null) {
+                            return 'Enter a valid number';
+                          }
+                          if (mark < 0 || mark > 100) {
+                            return 'Mark must be between 0 and 100';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 24),
+                      FilledButton.icon(
+                        onPressed: _submitForm,
+                        icon: const Icon(Icons.save_outlined),
+                        label: const Text('Save Subject'),
+                        style: FilledButton.styleFrom(
+                          minimumSize: const Size.fromHeight(52),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

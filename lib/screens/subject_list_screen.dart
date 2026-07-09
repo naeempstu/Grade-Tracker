@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../models/subject.dart';
 import '../providers/subject_provider.dart';
+import '../widgets/page_frame.dart';
 import '../widgets/subject_card.dart';
 
 class SubjectListScreen extends StatelessWidget {
@@ -13,36 +14,12 @@ class SubjectListScreen extends StatelessWidget {
     final subjectProvider = context.watch<SubjectProvider>();
     final subjects = subjectProvider.subjects;
 
-    return Padding(
-      padding: const EdgeInsets.all(24),
+    return PageFrame(
       child: subjects.isEmpty
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.school_outlined,
-                    size: 56,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'No Subjects Added',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Use the Add Subject tab to begin tracking grades.',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                ],
-              ),
-            )
-          : ListView.builder(
+          ? const _EmptySubjectState()
+          : ListView.separated(
               itemCount: subjects.length,
+              separatorBuilder: (_, _) => const SizedBox(height: 12),
               itemBuilder: (context, index) {
                 final subject = subjects[index];
                 return Dismissible(
@@ -53,7 +30,7 @@ class SubjectListScreen extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.errorContainer,
-                      borderRadius: BorderRadius.circular(18),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
                       Icons.delete_outline,
@@ -70,6 +47,60 @@ class SubjectListScreen extends StatelessWidget {
                 );
               },
             ),
+    );
+  }
+}
+
+class _EmptySubjectState extends StatelessWidget {
+  const _EmptySubjectState();
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Center(
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(28),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: colorScheme.outlineVariant),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                color: colorScheme.primaryContainer,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                Icons.school_outlined,
+                size: 38,
+                color: colorScheme.onPrimaryContainer,
+              ),
+            ),
+            const SizedBox(height: 18),
+            Text(
+              'No Subjects Added',
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Use the Add tab to begin tracking grades.',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
